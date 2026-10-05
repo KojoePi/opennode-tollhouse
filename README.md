@@ -25,9 +25,9 @@ The demo product shipped in this repo takes a piece of text and returns `stats` 
             Internet
                |  HTTPS
         +------v------+      one shared proxy per server
-        |  edge Caddy |      (repo: relayted-edge)
+        |  edge Caddy |      (repo: tollhouse-edge)
         +------+------+
-               | network "relayted_edge"  (web containers only)
+               | network "tollhouse_edge"  (web containers only)
         +------v------+   project-internal net   +-----------------+
         |     web     | <----------------------- |     worker      |
         | API, UI,    |   WORKER_TOKEN, /internal| no secrets,     |
@@ -35,7 +35,7 @@ The demo product shipped in this repo takes a piece of text and returns `stats` 
         +-------------+                          +-----------------+
 ```
 
-Several projects can live on one server and share one Caddy and one certificate store. The edge proxy has its own repository: `relayted-edge`. See `README.ai.md` for the exact wiring rules.
+Several projects can live on one server and share one Caddy and one certificate store. The edge proxy has its own repository: `tollhouse-edge`. See `README.ai.md` for the exact wiring rules.
 
 ## Quick start (local)
 
@@ -54,7 +54,7 @@ Start the worker in a second terminal with `WEB_URL=http://localhost:3000 WORKER
 
 1. Set up the edge proxy once per server (see the edge repository).
 2. Point a DNS A record for your domain to the server and add a block for it to the edge `Caddyfile` (upstream `newproject-web:3000`).
-3. Clone this repo to `/opt/relayted-newproject`, then `sudo make install`. It installs Docker if needed, creates the shared network, generates secrets, writes `.env` (mode 600), builds and starts web + worker.
+3. Clone this repo to `/opt/tollhouse-newproject`, then `sudo make install`. It installs Docker if needed, creates the shared network, generates secrets, writes `.env` (mode 600), builds and starts web + worker.
 4. **Back up `.env`.** `KEY_PEPPER` must never change after go-live or every recovery key stops working.
 5. `make doctor` verifies that the worker firewall blocks private and metadata addresses.
 
