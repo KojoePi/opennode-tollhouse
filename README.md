@@ -1,7 +1,7 @@
-# Tollhouse (relayted edition)
+# Opennode Tollhouse
 
 **A tiny, dependency-free web + sandboxed-worker framework for selling pay-per-use processing for Bitcoin Lightning, with no accounts.**
-
+(Frontpage)[https://github.com/KojoePi/tollhouse/blob/main/tollhouse-.jpg]
 Build a service where people paste something in, pick outputs, pay a few cents in sats, and download the result. No sign-up, no email, no card, no tracking. Tollhouse gives you everything around your idea (wallet, payments, job queue, refunds, sandboxed execution, privacy defaults) so you only write the one function that does the actual work.
 
 The demo product shipped in this repo takes a piece of text and returns `stats` (JSON) and `text` (cleaned). Replace it with anything: web scraping, PDF rendering, image or audio conversion, transcription, OCR, an ML model, an API wrapper.
