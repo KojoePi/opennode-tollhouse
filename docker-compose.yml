@@ -1,0 +1,51 @@
+# Relayted Tollhouse - two containers (web + worker). HTTPS is terminated by the SHARED edge proxy
+# (see README.ai.md and the separate "edge" repo: one Caddy for all projects on the server).
+name: newproject
+
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      TRUST_PROXY: "1"
+      DATA_DIR: /data
+    volumes:
+      - data:/data
+    mem_limit: 256m
+    networks:
+      default: {}            # keep! the worker reaches web through the project-internal network
+      edge:
+        aliases: [newproject-web]   # the name the edge Caddyfile points at; must be unique per server
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    restart: unless-stopped
+    init: true
+    depends_on: [web]
+    # No secrets here: only the internal API address and the shared token.
+    environment:
+      WEB_URL: http://web:3000
+      WORKER_TOKEN: ${WORKER_TOKEN}
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-1}
+      JOB_TIMEOUT_SECONDS: ${JOB_TIMEOUT_SECONDS:-90}
+      MAX_RESULT_BYTES: ${MAX_RESULT_BYTES:-20971520}
+    dns: [1.1.1.1, 9.9.9.9]
+    cap_drop: [ALL]
+    cap_add: [NET_ADMIN, SETUID, SETGID]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp:size=256m,mode=1777"]
+    pids_limit: 512
+    mem_limit: 512m          # raise for heavy engines (Chromium: ~1100m + shm_size: 256m)
+    cpus: 1.0
+    # The worker has no volumes and is NOT on the edge network.
+
+networks:
+  edge:
+    external: true
+    name: relayted_edge
+
+volumes:
+  data:

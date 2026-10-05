@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relayted Tollhouse</title>
+  <meta name="description" content="Relayted Tollhouse - pay per use, no account. / Pay per use, ohne Konto.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Relayted Tollhouse">
+  <meta property="og:description" content="Pay per use, no account.">
+  <!-- og:image: add <meta property="og:image" content="/og.png"> once you have a share image in public/ -->
+  <meta name="theme-color" content="#3B3FF0">
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/"><img src="/img/logo.svg" alt="" width="36" height="36"><span>Relayted Tollhouse</span></a>
+    <div class="top-right">
+      <button type="button" id="wallet-btn" class="wallet-pill" aria-haspopup="dialog" aria-controls="drawer">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#ffb703" d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>
+        <span id="wallet-balance">0</span>
+        <span id="wallet-unit" class="wallet-unit"></span>
+      </button>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="de">DE</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="hero-text">
+        <h1 data-i18n="hero.title"></h1>
+        <p class="lead" data-i18n="hero.sub"></p>
+        <ul class="badges">
+          <li data-i18n="hero.badge1"></li>
+          <li data-i18n="hero.badge2"></li>
+          <li data-i18n="hero.badge3"></li>
+        </ul>
+      </div>
+      <img class="hero-art" src="/img/hero.svg" alt="" width="520" height="380">
+    </div>
+
+    <p id="offline" class="notice warn" data-i18n="offline" hidden></p>
+
+    <form id="job-form" class="card form" novalidate>
+      <label class="field">
+        <span data-i18n="form.url"></span>
+        <textarea id="input" name="input" rows="4" maxlength="2000" autocomplete="off" spellcheck="false" data-i18n-ph="form.urlPh"></textarea>
+      </label>
+
+      <fieldset class="outputs">
+        <legend data-i18n="form.outputs"></legend>
+        <div id="outputs" class="output-grid"></div>
+      </fieldset>
+
+      <p class="hint" data-i18n="form.hint"></p>
+      <p id="form-error" class="error" role="alert" hidden></p>
+      <div class="form-foot">
+        <div class="total"><span data-i18n="form.total"></span> <b id="total"></b></div>
+        <button type="submit" id="submit" class="btn primary big" data-i18n="form.submit"></button>
+      </div>
+    </form>
+
+    <section id="jobs-section" class="jobs" hidden>
+      <h2 data-i18n="jobs.title"></h2>
+      <div id="jobs"></div>
+    </section>
+  </main>
+
+  <!-- ================= wallet drawer ================= -->
+  <div id="scrim" class="scrim" hidden></div>
+  <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden>
+    <div class="drawer-head">
+      <h2 id="drawer-title" data-i18n="wallet.title"></h2>
+      <button type="button" id="drawer-close" class="icon-btn" data-i18n-title="wallet.close">&times;</button>
+    </div>
+
+    <div class="drawer-body">
+      <div class="balance-box">
+        <span class="hint" data-i18n="wallet.balance"></span>
+        <b id="drawer-balance"></b>
+      </div>
+      <p id="low-hint" class="notice warn" hidden></p>
+
+      <!-- top-up: choose amount -->
+      <section id="pane-topup">
+        <h3 data-i18n="wallet.topup"></h3>
+        <p class="hint" data-i18n="wallet.eurNote"></p>
+        <div id="presets" class="chips"></div>
+        <div class="custom">
+          <label class="field">
+            <span data-i18n="wallet.custom"></span>
+            <input id="custom-eur" type="text" inputmode="decimal" autocomplete="off" placeholder="0,25">
+          </label>
+          <button type="button" id="custom-go" class="btn small" data-i18n="wallet.customGo"></button>
+        </div>
+        <p class="hint" id="bonus-hint"></p>
+        <p class="hint" id="limits-hint"></p>
+        <p id="quote" class="quote" hidden></p>
+        <p id="topup-error" class="error" role="alert" hidden></p>
+        <button type="button" id="topup-go" class="btn primary" data-i18n="wallet.pay" disabled></button>
+      </section>
+
+      <!-- top-up: invoice -->
+      <section id="pane-pay" hidden>
+        <h3 data-i18n="pay.title"></h3>
+        <div id="qr" class="qr" role="img" aria-label="Lightning QR code"></div>
+        <p class="pay-amount"><b id="pay-eur"></b><br><span class="hint" id="pay-sats"></span></p>
+        <div class="btn-row">
+          <a id="pay-open" class="btn primary" data-i18n="pay.open" href="#"></a>
+          <button type="button" id="pay-copy" class="btn" data-i18n="pay.copy"></button>
+        </div>
+        <a id="pay-mock" class="btn small" data-i18n="pay.mock" href="#" hidden></a>
+        <p class="waiting"><span class="pulse"></span><span data-i18n="pay.waiting"></span></p>
+        <button type="button" id="pay-back" class="btn small" data-i18n="pay.cancel"></button>
+      </section>
+
+      <p id="pay-done" class="notice ok" role="status" hidden></p>
+
+      <hr>
+      <!-- recovery key -->
+      <section id="pane-key">
+        <h3 data-i18n="key.title"></h3>
+        <p class="hint" data-i18n="key.lead"></p>
+        <p class="notice warn strong" data-i18n="key.warn"></p>
+        <p id="key-have" class="hint" data-i18n="key.have" hidden></p>
+        <p id="key-hint" class="hint" data-i18n="key.createHint"></p>
+        <p id="key-error" class="error" role="alert" hidden></p>
+        <button type="button" id="key-create" class="btn" data-i18n="key.create"></button>
+
+        <h4 data-i18n="key.loginTitle"></h4>
+        <div class="custom">
+          <label class="field">
+            <span class="sr-only" data-i18n="key.loginTitle"></span>
+            <input id="login-key" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" data-i18n-ph="key.loginPh">
+          </label>
+          <button type="button" id="login-go" class="btn small" data-i18n="key.login"></button>
+        </div>
+        <p id="login-msg" class="hint" role="status" hidden></p>
+        <p id="login-error" class="error" role="alert" hidden></p>
+        <button type="button" id="logout" class="btn small" data-i18n="key.logout" hidden></button>
+      </section>
+
+      <hr>
+      <section id="pane-hist">
+        <h3 data-i18n="hist.title"></h3>
+        <div id="hist"></div>
+        <button type="button" id="hist-more" class="btn small" data-i18n="hist.more" hidden></button>
+        <p class="hint" data-i18n="hist.note"></p>
+        <p><a id="csv-link" class="link" href="/api/transactions/topups.csv" data-i18n="hist.csv" hidden></a></p>
+      </section>
+    </div>
+  </aside>
+
+  <!-- ================= new key modal ================= -->
+  <div id="key-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="key-modal-title" hidden>
+    <div class="modal-card">
+      <h2 id="key-modal-title" data-i18n="key.title"></h2>
+      <p class="notice warn strong" data-i18n="key.warn"></p>
+      <code id="key-value" class="key-value"></code>
+      <div class="btn-row">
+        <button type="button" id="key-copy" class="btn" data-i18n="key.copy"></button>
+        <button type="button" id="key-file" class="btn" data-i18n="key.save"></button>
+      </div>
+      <label class="check"><input type="checkbox" id="key-ack"><span data-i18n="key.saved"></span></label>
+      <button type="button" id="key-done" class="btn primary" data-i18n="key.done" disabled></button>
+    </div>
+  </div>
+
+  <div id="cookie-note" class="cookie-note" role="region" hidden>
+    <span data-i18n="cookie.note"></span>
+    <button type="button" id="cookie-ok" class="btn small" data-i18n="cookie.ok"></button>
+  </div>
+
+  <footer class="foot">
+    <nav>
+      <a href="/impressum" data-i18n="foot.imprint"></a>
+      <a href="/datenschutz" data-i18n="foot.privacy"></a>
+      <a href="/agb" data-i18n="foot.terms"></a>
+    </nav>
+    <p><span data-i18n="foot.made"></span> <span class="heart" aria-label="love">&#10084;</span> <span data-i18n="foot.by"></span> <a href="https://relayted.de" target="_blank" rel="noopener">relayted.de</a></p>
+  </footer>
+</body>
+</html>

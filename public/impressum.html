@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Imprint - Relayted Tollhouse</title><meta name="robots" content="noindex, follow">
+<link rel="icon" type="image/svg+xml" href="/img/favicon.svg"><link rel="stylesheet" href="/style.css">
+<script type="module" src="/legal.js"></script></head>
+<body>
+<header class="top"><a class="brand" href="/"><img src="/img/logo.svg" alt="" width="36" height="36"><span>Relayted Tollhouse</span></a>
+<div class="top-right"><div class="langs" role="group" aria-label="Language"><button type="button" data-lang="de">DE</button><button type="button" data-lang="en">EN</button></div></div></header>
+<main class="legal">
+<!--
+  LEGAL PAGE SLOT  (impressum.html, served at /impressum)
+  Replace the two sections below with your own legal text. You write the text, this framework only serves it.
+  Placeholders are filled from .env at request time (HTML-escaped):
+    {{LEGAL_NAME}} {{LEGAL_ADDRESS}} {{LEGAL_EMAIL}} {{LEGAL_VAT_ID}}
+    {{DOMAIN}} {{BASE_URL}} {{RETENTION_HOURS}} {{TOPUP_MIN}} {{TOPUP_MAX}} {{BONUS_PERCENT}} {{BONUS_FROM}}
+  The language switch shows the section whose data-for matches (de / en). Delete one section if you only need one language.
+-->
+<section data-for="de">
+<h1>Impressum</h1>
+<p>[TODO: Text hier einfügen / replace this page]</p>
+</section>
+<section data-for="en" hidden>
+<h1>Imprint</h1>
+<p>[TODO: insert your text here]</p>
+</section>
+</main>
+<footer class="foot"><nav><a href="/impressum">Impressum / Imprint</a> <a href="/datenschutz">Datenschutz / Privacy</a> <a href="/agb">AGB / Terms</a> <a href="/">Start</a></nav></footer>
+</body></html>

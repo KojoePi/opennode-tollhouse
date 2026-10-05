@@ -1,0 +1,13 @@
+{
+  "name": "newproject",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Relayted Tollhouse - web + sandboxed worker framework with an anonymous Lightning wallet",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test --no-warnings tests/*.test.js"
+  },
+  "license": "MIT"
+}

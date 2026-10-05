@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /internal/
+Sitemap: {{BASE_URL}}/sitemap.xml
